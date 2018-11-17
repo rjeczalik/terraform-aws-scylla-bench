@@ -42,12 +42,12 @@ resource "null_resource" "install_deps" {
 
 	provisioner "file" {
 		destination = "create-schema.sh"
-		content = "${element(data.template_file.cmd_create_schema.*.rendered, count.index)}"
+		content = "${element(data.template_file.create_schema.*.rendered, count.index)}"
 	}
 
 	provisioner "file" {
 		destination = "write.sh"
-		content = "${element(data.template_file.cmd_write.*.rendered, count.index)}"
+		content = "${element(data.template_file.write.*.rendered, count.index)}"
 	}
 
 	provisioner "remote-exec" {
@@ -78,6 +78,7 @@ resource "null_resource" "create_schema" {
 		inline = ["./create-schema.sh"]
 	}
 
+	count = "${var.dry_run ? 0 : 1}"
 	depends_on = ["null_resource.install_deps"]
 }
 
@@ -104,7 +105,7 @@ resource "null_resource" "write" {
 	}
 
 	depends_on = ["null_resource.create_schema"]
-	count = "${var.instances}"
+	count = "${var.dry_run ? 0 : var.instances}"
 }
 
 resource "tls_private_key" "scylla" {

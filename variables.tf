@@ -56,18 +56,24 @@ variable "keys" {
 	default = 1000000000
 }
 
-variable "cmd_create_schema" {
+variable "offset" {
 	description = ""
-	default = <<EOF
-cassandra-stress write n=1 cl=ALL -schema "$${schema}" -mode native cql3 user="$${username}" password="$${password}" -seed "$${first_seed}"
-EOF
+	default = 0
 }
 
-variable "cmd_write" {
+variable "create_schema_script" {
 	description = ""
-	default = <<EOF
-cassandra-stress write cl=QUORUM n=$${count} -mode native cql3 user="$${username}" password="$${password}" -rate threads=350 limit='20000/s' -seed "$${first_seed}" -pop seq=$${range_from}..$${range_to}
-EOF
+	default = "default"
+}
+
+variable "write_script" {
+	description = ""
+	default = "default"
+}
+
+variable "dry_run" {
+	description = ""
+	default = false
 }
 
 variable "public_keys" {

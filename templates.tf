@@ -26,33 +26,15 @@ data "external" "my_ip" {
 }
 
 data "template_file" "install_deps" {
-	template = <<EOF
-#!/bin/bash
-
-set -eu
-
-sudo yum install -y epel-release wget screen
-sudo wget -O /etc/yum.repos.d/scylla.repo http://repositories.scylladb.com/scylla/repo/2e2f1a5f-4195-4691-8e19-43f6af57b0e2/centos/scylladb-2018.1.repo
-sudo yum install -y scylla-enterprise-tools
-
-mkdir -p ~/.ssh
-touch ~/.ssh/authorized_keys
-chmod 0700 ~/.ssh
-chmod 0600 ~/.ssh/authorized_keys
-
-cat <<EOG | while read key; do echo "$key" >> ~/.ssh/authorized_keys; done
-$${public_keys}
-EOG
-
-EOF
+	template = "${file(format("%s/scripts/install-deps.sh", path.module))}"
 
 	vars = {
 		public_keys = "${join("\n", data.template_file.public_keys.*.rendered)}"
 	}
 }
 
-data "template_file" "cmd_create_schema" {
-	template = "${var.cmd_create_schema}"
+data "template_file" "create_schema" {
+	template = "${var.create_schema_script == "" ? "echo done" : var.create_schema_script == "default" ? file(format("%s/scripts/create-schema.sh", path.module)) : var.create_schema_script}"
 
 	vars = {
 		schema = "${var.schema}"
@@ -65,8 +47,8 @@ data "template_file" "cmd_create_schema" {
 	count = "${var.instances}"
 }
 
-data "template_file" "cmd_write" {
-	template = "${var.cmd_write}"
+data "template_file" "write" {
+	template = "${var.write_script == "" ? "echo done" : var.write_script == "default" ? file(format("%s/scripts/write.sh", path.module)) : var.write_script}"
 
 	vars = {
 		schema = "${var.schema}"
@@ -75,8 +57,8 @@ data "template_file" "cmd_write" {
 		password = "${var.password}"
 		first_seed = "${element(var.seeds, 0)}"
 		seeds = "${join(" ", var.seeds)}"
-		range_from = "${(var.keys / var.instances) * count.index}"
-		range_to = "${(var.keys / var.instances) * (count.index + 1)}"
+		range_from = "${(var.keys / var.instances) * count.index + var.offset}"
+		range_to = "${(var.keys / var.instances) * (count.index + 1) + var.offset}"
 	}
 
 	count = "${var.instances}"
