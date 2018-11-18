@@ -75,7 +75,3 @@ data "template_file" "public_keys" {
 	count = "${length(var.public_keys)}"
 }
 
-resource "random_string" "suffix" {
-	length = 8
-	special = false
-}

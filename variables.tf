@@ -1,23 +1,25 @@
 variable "aws_access_key" {
-	description = ""
+	description = "AWS Access Key ID"
+	default = ""
 }
 
 variable "aws_secret_key" {
-	description = ""
+	description = "AWS Secret Access Key"
+	default = ""
 }
 
 variable "aws_region" {
-	description = ""
+	description = "AWS Region"
 	default = "us-east-1"
 }
 
 variable "aws_instance_type" {
-	description = ""
+	description = "AWS Instance Type"
 	default = "c4.large"
 }
 
 variable "aws_tags" {
-	description = ""
+	description = "Tags for each created AWS resource"
 	type = "map"
 	default = {
 		"environment" = "scylla-bench"
@@ -27,74 +29,74 @@ variable "aws_tags" {
 }
 
 variable "seeds" {
-	description = ""
+	description = "Network addresses of Scylla nodes"
 	type = "list"
 }
 
 variable "username" {
-	description = ""
+	description = "Scylla CQL username"
 	default = "cassandra"
 }
 
 variable "password" {
-	description = ""
+	description = "Scylla CQL password"
 	default = "cassandra"
 }
 
 variable "schema" {
-	description = ""
+	description = "Scylla keyspace schema"
 	default = "replication(factor=3)"
 }
 
 variable "instances" {
-	description = ""
+	description = "Number of scylla-bench instances (concurrency)"
 	default = 4
 }
 
 variable "keys" {
-	description = ""
+	description = "Number of unique keys to split between instances"
 	default = 1000000000
 }
 
 variable "offset" {
-	description = ""
+	description = "Starting number of unique keys"
 	default = 0
 }
 
 variable "limit" {
-	description = ""
+	description = "Req/s limit per instance"
 	default = 10000
 }
 
 variable "create_schema_script" {
-	description = ""
+	description = "Override command template for creating keyspace schema"
 	default = "default"
 }
 
 variable "write_script" {
-	description = ""
+	description = "Override command template for writing data"
 	default = "default"
 }
 
 variable "dry_run" {
-	description = ""
+	description = "Do not execute commands when set to true"
 	default = false
 }
 
 variable "public_keys" {
-	description = ""
+	description = "Additional public keys to add to each instance"
 	type = "list"
 	default = []
 }
 
 variable "allow_cidr" {
-	description = ""
+	description = "Additional CIDR blocks to add to a security group"
 	type = "list"
 	default = []
 }
 
 variable "allow_ports" {
-	description = ""
+	description = "Additional prots to open within a security group"
 	type = "list"
 	default = [22]
 }

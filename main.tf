@@ -4,6 +4,12 @@ provider "aws" {
 	region = "${var.aws_region}"
 }
 
+locals {
+	aws_tags = "${merge(local.aws_tags, map("uuid", random_uuid.uuid.result))}"
+}
+
+resource "random_uuid" "uuid" { }
+
 resource "aws_instance" "scylla" {
 	ami = "${data.aws_ami.centos.id}"
 	instance_type = "${var.aws_instance_type}"
@@ -17,7 +23,7 @@ resource "aws_instance" "scylla" {
 		cpu_credits = "unlimited"
 	}
 
-	tags = "${var.aws_tags}"
+	tags = "${local.aws_tags}"
 
 	count = "${var.instances}"
 }
@@ -114,20 +120,20 @@ resource "tls_private_key" "scylla" {
 }
 
 resource "aws_key_pair" "scylla" {
-	key_name = "scylla-bench-${random_string.suffix.result}"
+	key_name = "scylla-bench-${random_uuid.uuid.result}"
 	public_key = "${tls_private_key.scylla.public_key_openssh}"
 }
 
 resource "aws_vpc" "scylla" {
 	cidr_block = "10.0.0.0/16"
 
-	tags = "${var.aws_tags}"
+	tags = "${local.aws_tags}"
 }
 
 resource "aws_internet_gateway" "scylla" {
 	vpc_id = "${aws_vpc.scylla.id}"
 
-	tags = "${var.aws_tags}"
+	tags = "${local.aws_tags}"
 }
 
 resource "aws_subnet" "scylla" {
@@ -136,7 +142,7 @@ resource "aws_subnet" "scylla" {
 	vpc_id = "${aws_vpc.scylla.id}"
 	map_public_ip_on_launch = true
 
-	tags = "${var.aws_tags}"
+	tags = "${local.aws_tags}"
 
 	depends_on = ["aws_internet_gateway.scylla"]
 }
@@ -149,7 +155,7 @@ resource "aws_route_table" "scylla" {
 		gateway_id = "${aws_internet_gateway.scylla.id}"
 	}
 
-	tags = "${var.aws_tags}"
+	tags = "${local.aws_tags}"
 }
 
 resource "aws_route_table_association" "public" {
@@ -161,7 +167,7 @@ resource "aws_security_group" "scylla" {
 	name = "scylla-bench"
 	vpc_id = "${aws_vpc.scylla.id}"
 
-	tags = "${var.aws_tags}"
+	tags = "${local.aws_tags}"
 }
 
 resource "aws_security_group_rule" "scylla_egress" {
