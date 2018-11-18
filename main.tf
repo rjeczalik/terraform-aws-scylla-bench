@@ -114,7 +114,7 @@ resource "tls_private_key" "scylla" {
 }
 
 resource "aws_key_pair" "scylla" {
-	key_name = "scylla-bench"
+	key_name = "scylla-bench-${random_string.suffix.result}"
 	public_key = "${tls_private_key.scylla.public_key_openssh}"
 }
 
