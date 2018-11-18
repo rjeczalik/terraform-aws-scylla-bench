@@ -53,6 +53,7 @@ data "template_file" "write" {
 	vars = {
 		schema = "${var.schema}"
 		count = "${var.keys / var.instances}"
+		limit = "${var.limit}"
 		username = "${var.username}"
 		password = "${var.password}"
 		first_seed = "${element(var.seeds, 0)}"

@@ -61,6 +61,11 @@ variable "offset" {
 	default = 0
 }
 
+variable "limit" {
+	description = ""
+	default = 10000
+}
+
 variable "create_schema_script" {
 	description = ""
 	default = "default"
