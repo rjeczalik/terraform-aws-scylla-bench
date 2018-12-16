@@ -35,12 +35,10 @@ variable "seeds" {
 
 variable "username" {
 	description = "Scylla CQL username"
-	default = "cassandra"
 }
 
 variable "password" {
 	description = "Scylla CQL password"
-	default = "cassandra"
 }
 
 variable "schema" {

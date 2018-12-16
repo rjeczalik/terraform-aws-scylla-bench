@@ -70,6 +70,7 @@ resource "null_resource" "install_deps" {
 resource "null_resource" "create_schema" {
 	triggers {
 		ids = "${join(",", var.seeds)}"
+		credentials = "${var.username}:${var.password}"
 	}
 
 	connection {
@@ -91,6 +92,7 @@ resource "null_resource" "create_schema" {
 resource "null_resource" "write" {
 	triggers {
 		ids = "${join(",", var.seeds)}"
+		credentials = "${var.username}:${var.password}"
 	}
 
 	connection {
