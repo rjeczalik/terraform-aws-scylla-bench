@@ -41,7 +41,7 @@ data "template_file" "create_schema" {
 		username = "${var.username}"
 		password = "${var.password}"
 		first_seed = "${element(var.seeds, 0)}"
-		seeds = "${join(" ", var.seeds)}"
+		seeds = "${join(",", var.seeds)}"
 	}
 
 	count = "${var.instances}"
@@ -57,7 +57,7 @@ data "template_file" "write" {
 		username = "${var.username}"
 		password = "${var.password}"
 		first_seed = "${element(var.seeds, 0)}"
-		seeds = "${join(" ", var.seeds)}"
+		seeds = "${join(",", var.seeds)}"
 		range_from = "${(var.keys / var.instances) * count.index + var.offset}"
 		range_to = "${(var.keys / var.instances) * (count.index + 1) + var.offset}"
 	}
