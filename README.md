@@ -23,7 +23,7 @@ In addition the procedure usually involves a number of simple steps, which this 
   - there are a number of variables, that can alter the default behaviour: consult [Variables section](./Variables) for more information
   - the load script itself can also be overwritten with `write_script` variables (`scripts/write.sh` being a default)
  
-Once the load if finished (the fact needs to be observed externally, e.g. using (Scylla Monitoring)(https://github.com/scylladb/scylla-grafana-monitoring/) stack), the infrastracture created by this module can be safely teared down.
+Once the load if finished (the fact needs to be observed externally, e.g. using [Scylla Monitoring](https://github.com/scylladb/scylla-grafana-monitoring/) stack), the infrastracture created by this module can be safely teared down.
 
 ## Example
 
