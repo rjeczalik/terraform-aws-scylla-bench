@@ -5,7 +5,7 @@ provider "aws" {
 }
 
 locals {
-	aws_tags = "${merge(local.aws_tags, map("uuid", random_uuid.uuid.result))}"
+	aws_tags = "${merge(var.aws_tags, map("uuid", random_uuid.uuid.result))}"
 }
 
 resource "random_uuid" "uuid" { }
