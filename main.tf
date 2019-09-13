@@ -38,7 +38,7 @@ resource "null_resource" "install_deps" {
 		host = "${element(aws_instance.scylla.*.public_ip, count.index)}"
 		user = "centos"
 		private_key = "${tls_private_key.scylla.private_key_pem}"
-		timeout = "1m"
+		timeout = "10m"
 	}
 
 	provisioner "file" {
@@ -78,7 +78,7 @@ resource "null_resource" "create_schema" {
 		host = "${element(aws_instance.scylla.*.public_ip, 0)}"
 		user = "centos"
 		private_key = "${tls_private_key.scylla.private_key_pem}"
-		timeout = "1m"
+		timeout = "10m"
 	}
 
 	provisioner "remote-exec" {
@@ -100,7 +100,7 @@ resource "null_resource" "write" {
 		host = "${element(aws_instance.scylla.*.public_ip, count.index)}"
 		user = "centos"
 		private_key = "${tls_private_key.scylla.private_key_pem}"
-		timeout = "1m"
+		timeout = "10m"
 	}
 
 	provisioner "remote-exec" {
