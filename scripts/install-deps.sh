@@ -2,9 +2,14 @@
 
 set -eu
 
-sudo yum install -y epel-release wget screen
-sudo wget -O /etc/yum.repos.d/scylla.repo http://repositories.scylladb.com/scylla/repo/2e2f1a5f-4195-4691-8e19-43f6af57b0e2/centos/scylladb-2018.1.repo
-sudo yum install -y scylla-enterprise-tools
+sudo apt install -y wget screen
+sudo mkdir -p /etc/apt/keyrings
+sudo gpg --homedir /tmp --no-default-keyring --keyring /etc/apt/keyrings/scylladb.gpg --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys d0a112e067426ab2
+sudo wget -O /etc/apt/sources.list.d/scylla.list http://downloads.scylladb.com/deb/debian/scylla-5.1.list
+
+sudo apt update
+
+sudo apt install -y scylla-tools
 
 mkdir -p ~/.ssh
 touch ~/.ssh/authorized_keys

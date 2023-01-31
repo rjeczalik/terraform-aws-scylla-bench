@@ -12,7 +12,7 @@ locals {
 resource "random_uuid" "uuid" { }
 
 resource "aws_instance" "scylla" {
-	ami = "${data.aws_ami.centos.id}"
+	ami = "${data.aws_ami.ubuntu.id}"
 	instance_type = "${var.aws_instance_type}"
 	key_name = "${aws_key_pair.scylla.key_name}"
 	availability_zone = "${element(data.aws_availability_zones.all.names, 0)}"
@@ -37,7 +37,7 @@ resource "null_resource" "install_deps" {
 	connection {
 		type = "ssh"
 		host = "${element(aws_instance.scylla.*.public_ip, count.index)}"
-		user = "centos"
+		user = "ubuntu"
 		private_key = "${tls_private_key.scylla.private_key_pem}"
 		timeout = "10m"
 	}
@@ -77,7 +77,7 @@ resource "null_resource" "create_schema" {
 	connection {
 		type = "ssh"
 		host = "${element(aws_instance.scylla.*.public_ip, 0)}"
-		user = "centos"
+		user = "ubuntu"
 		private_key = "${tls_private_key.scylla.private_key_pem}"
 		timeout = "10m"
 	}
@@ -99,7 +99,7 @@ resource "null_resource" "write" {
 	connection {
 		type = "ssh"
 		host = "${element(aws_instance.scylla.*.public_ip, count.index)}"
-		user = "centos"
+		user = "ubuntu"
 		private_key = "${tls_private_key.scylla.private_key_pem}"
 		timeout = "10m"
 	}

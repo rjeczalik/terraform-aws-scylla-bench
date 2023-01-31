@@ -1,11 +1,11 @@
 data "aws_availability_zones" "all" {}
 
-data "aws_ami" "centos" {
+data "aws_ami" "ubuntu" {
 	most_recent = true
 
 	filter {
 		name   = "name"
-		values = ["CentOS Linux 7 x86_64 HVM EBS*"]
+		values = ["ubuntu/images/hvm-ssd/*22.04*"]
 	}
 
 	filter {
@@ -18,7 +18,7 @@ data "aws_ami" "centos" {
 		values = ["ebs"]
 	}
 
-	owners = ["679593333241"]
+	owners = ["099720109477"]
 }
 
 data "external" "my_ip" {
