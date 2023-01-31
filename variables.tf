@@ -18,6 +18,11 @@ variable "aws_instance_type" {
 	default = "c4.large"
 }
 
+variable "aws_vpc_id" {
+	description = "AWS VPC to use"
+	default = ""
+}
+
 variable "aws_tags" {
 	description = "Tags for each created AWS resource"
 	type = map(string)

@@ -5,7 +5,8 @@ provider "aws" {
 }
 
 locals {
-	aws_tags = "${merge(var.aws_tags, map("uuid", random_uuid.uuid.result))}"
+	aws_tags = "${merge(var.aws_tags, tomap({ uuid = random_uuid.uuid.result }))}"
+	aws_vpc_id = var.aws_vpc_id != "" ? var.aws_vpc_id : aws_vpc.scylla[0].id
 }
 
 resource "random_uuid" "uuid" { }
@@ -29,7 +30,7 @@ resource "aws_instance" "scylla" {
 }
 
 resource "null_resource" "install_deps" {
-	triggers {
+	triggers = {
 		ids = "${join(",", aws_instance.scylla.*.id)}"
 	}
 
@@ -68,7 +69,7 @@ resource "null_resource" "install_deps" {
 }
 
 resource "null_resource" "create_schema" {
-	triggers {
+	triggers = {
 		ids = "${join(",", var.seeds)}"
 		credentials = "${var.username}:${var.password}"
 	}
@@ -90,7 +91,7 @@ resource "null_resource" "create_schema" {
 }
 
 resource "null_resource" "write" {
-	triggers {
+	triggers = {
 		ids = "${join(",", var.seeds)}"
 		credentials = "${var.username}:${var.password}"
 	}
@@ -127,13 +128,14 @@ resource "aws_key_pair" "scylla" {
 }
 
 resource "aws_vpc" "scylla" {
+    count = var.aws_vpc_id != "" ? 0 : 1
 	cidr_block = "10.0.0.0/16"
 
 	tags = "${local.aws_tags}"
 }
 
 resource "aws_internet_gateway" "scylla" {
-	vpc_id = "${aws_vpc.scylla.id}"
+	vpc_id = local.aws_vpc_id
 
 	tags = "${local.aws_tags}"
 }
@@ -141,7 +143,7 @@ resource "aws_internet_gateway" "scylla" {
 resource "aws_subnet" "scylla" {
 	availability_zone = "${element(data.aws_availability_zones.all.names, 0)}"
 	cidr_block = "10.0.1.0/24"
-	vpc_id = "${aws_vpc.scylla.id}"
+	vpc_id = local.aws_vpc_id
 	map_public_ip_on_launch = true
 
 	tags = "${local.aws_tags}"
@@ -150,9 +152,9 @@ resource "aws_subnet" "scylla" {
 }
 
 resource "aws_route_table" "scylla" {
-	vpc_id = "${aws_vpc.scylla.id}"
+	vpc_id = local.aws_vpc_id
 
-	route = {
+	route {
 		cidr_block = "0.0.0.0/0"
 		gateway_id = "${aws_internet_gateway.scylla.id}"
 	}
@@ -167,7 +169,7 @@ resource "aws_route_table_association" "public" {
 
 resource "aws_security_group" "scylla" {
 	name = "scylla-bench"
-	vpc_id = "${aws_vpc.scylla.id}"
+	vpc_id = local.aws_vpc_id
 
 	tags = "${local.aws_tags}"
 }
@@ -184,7 +186,7 @@ resource "aws_security_group_rule" "scylla_egress" {
 resource "aws_security_group_rule" "scylla_ingress" {
 	type = "ingress"
 	security_group_id = "${aws_security_group.scylla.id}"
-	cidr_blocks = ["${compact(concat(list(format("%s/32", data.external.my_ip.result.public_ip)), var.allow_cidr))}"]
+	cidr_blocks = concat([format("%s/32", data.external.my_ip.result.public_ip)], var.allow_cidr)
 	from_port = "${element(var.allow_ports, count.index)}"
 	to_port = "${element(var.allow_ports, count.index)}"
 	protocol = "tcp"
