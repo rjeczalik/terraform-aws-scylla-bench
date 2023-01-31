@@ -20,7 +20,7 @@ variable "aws_instance_type" {
 
 variable "aws_tags" {
 	description = "Tags for each created AWS resource"
-	type = "map"
+	type = map(string)
 	default = {
 		"environment" = "scylla-bench"
 		"version" = "0.1.0"
@@ -30,7 +30,7 @@ variable "aws_tags" {
 
 variable "seeds" {
 	description = "Network addresses of Scylla nodes"
-	type = "list"
+	type = list(string)
 }
 
 variable "username" {
@@ -83,18 +83,18 @@ variable "dry_run" {
 
 variable "public_keys" {
 	description = "Additional public keys to add to each instance"
-	type = "list"
+	type = list(string)
 	default = []
 }
 
 variable "allow_cidr" {
 	description = "Additional CIDR blocks to add to a security group"
-	type = "list"
+	type = list(string)
 	default = []
 }
 
 variable "allow_ports" {
 	description = "Additional prots to open within a security group"
-	type = "list"
+	type = list(string)
 	default = [22]
 }

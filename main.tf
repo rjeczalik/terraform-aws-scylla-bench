@@ -64,7 +64,7 @@ resource "null_resource" "install_deps" {
 	}
 
 	count = "${var.instances}"
-	depends_on = ["aws_instance.scylla"]
+	depends_on = [aws_instance.scylla]
 }
 
 resource "null_resource" "create_schema" {
@@ -86,7 +86,7 @@ resource "null_resource" "create_schema" {
 	}
 
 	count = "${var.dry_run ? 0 : 1}"
-	depends_on = ["null_resource.install_deps"]
+	depends_on = [null_resource.install_deps]
 }
 
 resource "null_resource" "write" {
@@ -112,7 +112,7 @@ resource "null_resource" "write" {
 		]
 	}
 
-	depends_on = ["null_resource.create_schema"]
+	depends_on = [null_resource.create_schema]
 	count = "${var.dry_run ? 0 : var.instances}"
 }
 
@@ -146,7 +146,7 @@ resource "aws_subnet" "scylla" {
 
 	tags = "${local.aws_tags}"
 
-	depends_on = ["aws_internet_gateway.scylla"]
+	depends_on = [aws_internet_gateway.scylla]
 }
 
 resource "aws_route_table" "scylla" {
