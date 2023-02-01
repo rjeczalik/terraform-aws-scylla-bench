@@ -2,13 +2,14 @@
 
 set -eu
 
-sudo apt install -y wget screen
+export DEBIAN_FRONTEND=noninteractive
+
+sudo apt install -y wget screen curl gpg
 sudo mkdir -p /etc/apt/keyrings
-sudo gpg --homedir /tmp --no-default-keyring --keyring /etc/apt/keyrings/scylladb.gpg --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys d0a112e067426ab2
+sudo gpg --homedir /tmp --no-default-keyring --keyring /etc/apt/keyrings/scylladb.gpg --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys d0a112e067426ab2
 sudo wget -O /etc/apt/sources.list.d/scylla.list http://downloads.scylladb.com/deb/debian/scylla-5.1.list
 
 sudo apt update
-
 sudo apt install -y scylla-tools
 
 mkdir -p ~/.ssh
