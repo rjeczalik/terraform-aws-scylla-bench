@@ -1,18 +1,3 @@
-variable "aws_access_key" {
-	description = "AWS Access Key ID"
-	default = ""
-}
-
-variable "aws_secret_key" {
-	description = "AWS Secret Access Key"
-	default = ""
-}
-
-variable "aws_region" {
-	description = "AWS Region"
-	default = "us-east-1"
-}
-
 variable "aws_instance_type" {
 	description = "AWS Instance Type"
 	default = "c4.large"

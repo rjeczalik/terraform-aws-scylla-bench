@@ -1,9 +1,3 @@
-provider "aws" {
-	access_key = "${var.aws_access_key}"
-	secret_key = "${var.aws_secret_key}"
-	region = "${var.aws_region}"
-}
-
 locals {
 	aws_tags = "${merge(var.aws_tags, tomap({ uuid = random_uuid.uuid.result }))}"
 	aws_vpc_id = var.aws_vpc_id != "" ? var.aws_vpc_id : aws_vpc.scylla[0].id
